@@ -8,7 +8,7 @@ use rand::{rngs::ThreadRng, Rng};
 fn main() {
     let mut r = rand::thread_rng();
 
-    for l in [16, 32, 64, 128, 256, 512, 1024, 2048] {
+    for l in [2, 16, 32, 64, 128, 256, 512, 1024, 2048] {
         write_test(l, &mut r);
     }
 }

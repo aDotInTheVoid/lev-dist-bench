@@ -16,14 +16,36 @@ trait EditDistance: Default {
     fn dist(&mut self, a: &str, b: &str) -> usize;
 }
 
-#[derive(Default)]
-struct OneRow;
+// #[derive(Default)]
+// struct OneRow;
 
-impl EditDistance for OneRow {
-    fn dist(&mut self, a: &str, b: &str) -> usize {
-        lev_dist::one_row(a, b)
-    }
+// impl EditDistance for OneRow {
+//     fn dist(&mut self, a: &str, b: &str) -> usize {
+//         lev_dist::one_row(a, b)
+//     }
+// }
+
+macro_rules! edi {
+    ($([$struct_name:ident, $fn_name:ident])*) => {
+        $(
+            #[derive(Default)]
+            struct $struct_name;
+
+            impl EditDistance for $struct_name {
+                fn dist(&mut self, a: &str, b: &str) -> usize {
+                    lev_dist::$fn_name(a, b)
+                }
+            }
+        )*
+    };
 }
+
+edi!(
+    [OneRow, one_row]
+    [TwoRows, two_rows]
+    [FullMatrix, full_matrix]
+    [Naive, naive]
+);
 
 #[derive(Default)]
 struct Myers(lev_dist::Myers);
@@ -35,26 +57,27 @@ impl EditDistance for Myers {
 }
 
 macro_rules! data_mod {
-    ($mod_name:ident, $name:ident) => {
+    ($mod_name:ident, $name:ident $([
+        $test_name:ident, $struct_name:ident
+    ])*) => {
         mod $mod_name;
 
         mod $name {
             use crate::$mod_name::DATA;
 
-            // #[test]
-            // fn naive() {
-            //     crate::check_data(lev_dist::naive, DATA);
-            // }
+            $(
+                #[test]
+                fn $test_name() {
+                    super::check_data::<super::$struct_name>(&DATA);
+                }
+            )*
 
-            // #[test]
-            // fn full_matrix() {
-            //     crate::check_data(lev_dist::full_matrix, DATA);
-            // }
 
-            // #[test]
-            // fn two_rows() {
-            //     crate::check_data(lev_dist::two_rows, DATA);
-            // }
+
+            #[test]
+            fn two_rows() {
+                crate::check_data::<crate::TwoRows>(DATA);
+            }
 
             #[test]
             fn one_row() {
@@ -69,9 +92,11 @@ macro_rules! data_mod {
     };
 }
 
-data_mod!(data_16, l16);
-data_mod!(data_32, l32);
-data_mod!(data_64, l64);
+data_mod!(data_2, l2 [full_matrix, FullMatrix] [naive, Naive]);
+
+data_mod!(data_16, l16 [full_matrix, FullMatrix] );
+data_mod!(data_32, l32 [full_matrix, FullMatrix] );
+data_mod!(data_64, l64 [full_matrix, FullMatrix] );
 data_mod!(data_128, l128);
 data_mod!(data_256, l256);
 data_mod!(data_512, l512);
