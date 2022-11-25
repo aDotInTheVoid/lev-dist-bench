@@ -112,3 +112,64 @@ pub fn one_row(s: &str, t: &str) -> usize {
     }
     cur[n]
 }
+
+pub fn myers(a: &str, b: &str) -> usize {
+    let a_len = a.chars().count();
+    let b_len = b.chars().count();
+    if a_len < b_len {
+        return myers(b, a);
+    }
+    if b_len == 0 {
+        return a_len;
+    }
+    if a_len <= 64 {
+        return myers::m64(a, b);
+    }
+    return myers::mx(a, b);
+}
+
+mod myers {
+
+    const CMAX: usize = char::MAX as usize;
+
+    pub(super) fn m64(a: &str, b: &str) -> usize {
+        let mut peq: Box<[u64]> = vec![0u64; CMAX].into_boxed_slice();
+
+        let mut pv = u64::MAX;
+        let mut mv = 0;
+        let mut sc = 0;
+
+        for c in a.chars() {
+            let c = c as usize;
+            peq[c] |= 1 << sc;
+            sc += 1;
+        }
+
+        let ls = 1 << (sc - 1);
+
+        for c in b.chars() {
+            let c = c as usize;
+            let mut eq = peq[c];
+            let xv = eq | mv;
+            eq |= (eq & pv).wrapping_add(pv) ^ pv;
+            mv |= !(eq | pv);
+            pv &= eq;
+
+            if (mv & ls) != 0 {
+                sc += 1;
+            }
+            if (pv & ls) != 0 {
+                sc -= 1;
+            }
+            mv = (mv << 1) | 1;
+            pv = (pv << 1) | !(xv | mv);
+            mv &= xv;
+        }
+
+        sc
+    }
+
+    pub(super) fn mx(a: &str, b: &str) -> usize {
+        todo!()
+    }
+}

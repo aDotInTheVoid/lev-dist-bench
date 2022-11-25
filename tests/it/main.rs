@@ -1,4 +1,4 @@
-use lev_dist::{full_matrix, naive, one_row, two_rows, EditDistance};
+use lev_dist::EditDistance;
 
 #[track_caller]
 fn check(f: EditDistance, expected: usize, x: &str, y: &str) {
@@ -6,39 +6,49 @@ fn check(f: EditDistance, expected: usize, x: &str, y: &str) {
     assert_eq!(actual, expected, "{x:?} {y:?}");
 }
 
-fn test_smokecheck(ed: EditDistance) {
-    check(ed, 4, "toil", "trouble");
-    check(ed, 3, "kitten", "sitting");
-    check(ed, 2, "book", "back");
-    check(ed, 0, "", "");
-    check(ed, 1, "", "a");
-    check(ed, 1, "a", "");
-    check(ed, 0, "lovemuffin", "lovemuffin");
-    check(ed, 2, "üö", "uo");
-    check(ed, 0, "üö", "üö");
-    check(ed, 2, "üö", "üöüö");
-    check(ed, 0, "☀☂☃☄", "☀☂☃☄");
-    check(ed, 3, "ฎ ฏ ฐ", "a b c");
-    check(ed, 1, "Café", "Cafe");
-    check(ed, 2, "𐐷𤭢", "$%");
+fn check_data(f: EditDistance, data: &[(usize, &str, &str)]) {
+    for (expected, x, y) in data {
+        check(f, *expected, x, y);
+    }
 }
 
-#[test]
-fn smokecheck_naive() {
-    test_smokecheck(naive);
+macro_rules! data_mod {
+    ($mod_name:ident, $name:ident) => {
+        mod $mod_name;
+
+        mod $name {
+            use crate::$mod_name::DATA;
+
+            // #[test]
+            // fn naive() {
+            //     crate::check_data(lev_dist::naive, DATA);
+            // }
+
+            #[test]
+            fn full_matrix() {
+                crate::check_data(lev_dist::full_matrix, DATA);
+            }
+
+            #[test]
+            fn two_rows() {
+                crate::check_data(lev_dist::two_rows, DATA);
+            }
+
+            #[test]
+            fn one_row() {
+                crate::check_data(lev_dist::one_row, DATA);
+            }
+
+            #[test]
+            fn myers() {
+                crate::check_data(lev_dist::myers, DATA);
+            }
+        }
+    };
 }
 
-#[test]
-fn smokecheck_full_matrix() {
-    test_smokecheck(full_matrix);
-}
-
-#[test]
-fn smokecheck_two_rows() {
-    test_smokecheck(two_rows);
-}
-
-#[test]
-fn smokecheck_one_row() {
-    test_smokecheck(one_row);
-}
+data_mod!(data_lt64_ascii, lt64_ascii);
+data_mod!(data_lt64_unicode, lt64_unicode);
+data_mod!(data_eq64_ascii, eq64_ascii);
+data_mod!(data_eq64_unicode, eq64_unicode);
+data_mod!(data_smoketest, smoketest);
