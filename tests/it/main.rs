@@ -1,4 +1,4 @@
-use lev_dist::{full_matrix, naive, two_rows, EditDistance};
+use lev_dist::{full_matrix, naive, one_row, two_rows, EditDistance};
 
 #[track_caller]
 fn check(f: EditDistance, expected: usize, x: &str, y: &str) {
@@ -36,4 +36,9 @@ fn smokecheck_full_matrix() {
 #[test]
 fn smokecheck_two_rows() {
     test_smokecheck(two_rows);
+}
+
+#[test]
+fn smokecheck_one_row() {
+    test_smokecheck(one_row);
 }

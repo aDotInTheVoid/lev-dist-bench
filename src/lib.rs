@@ -83,3 +83,32 @@ pub fn two_rows(s: &str, t: &str) -> usize {
 
     return v0[n];
 }
+
+pub fn one_row(s: &str, t: &str) -> usize {
+    let n = t.chars().count();
+
+    let mut cur = vec![0; n + 1];
+
+    for i in 1..=n {
+        cur[i] = i;
+    }
+
+    for (i, si) in s.chars().enumerate() {
+        let mut pre = cur[0];
+        cur[0] = i + 1;
+        for (j, tj) in t.chars().enumerate() {
+            let sub = if si == tj { 0 } else { 1 };
+
+            let mut tmp = cur[j + 1];
+
+            let del_cost = tmp + 1;
+            let ins_cost = cur[j] + 1;
+            let sub_cost = pre + sub;
+
+            tmp = cur[j + 1];
+            cur[j + 1] = min(del_cost, ins_cost, sub_cost);
+            pre = tmp;
+        }
+    }
+    cur[n]
+}
