@@ -1,27 +1,30 @@
-use std::fmt::Write;
-use std::{cmp::min, io};
+use std::cmp::max;
+use std::fs::File;
+use std::io::BufWriter;
+use std::io::Write;
 
 use rand::{rngs::ThreadRng, Rng};
 
 fn main() {
-    let mut out = String::new();
+    let mut r = rand::thread_rng();
 
-    let mut rng = rand::thread_rng();
+    for l in [16, 32, 64, 128, 256, 512, 1024, 2048] {
+        write_test(l, &mut r);
+    }
+}
 
+fn write_test(l: usize, r: &mut ThreadRng) {
+    let name = format!("tests/it/data_{l}.rs");
+
+    let mut out = BufWriter::new(File::create(&name).unwrap());
     writeln!(out, "pub const DATA: &[(usize, &str, &str)] = &[").unwrap();
 
-    for i in 1..1000 {
-        // let ls = rng.gen_range(0..=min(64, i));
-        // let lt = rng.gen_range(0..=min(64, i));
+    for _ in 1..1000 {
+        let l1 = l + r.gen_range(0..max(l / 10, 5));
+        let l2 = l + r.gen_range(0..max(l / 10, 5));
 
-        let ls = 2000;
-        let lt = 2000;
-
-        let s = random_string(ls, &mut rng);
-        let t = random_string(lt, &mut rng);
-
-        // let s = random_unicode_string(ls, &mut rng);
-        // let t = random_unicode_string(lt, &mut rng);
+        let s = gen_string(l1, r);
+        let t = gen_string(l2, r);
 
         let d = edit_distance::edit_distance(&s, &t);
 
@@ -30,33 +33,19 @@ fn main() {
 
     writeln!(out, "];").unwrap();
 
-    println!("{}", out);
+    println!("wrote {}", name);
 }
 
-fn random_string(n: usize, r: &mut ThreadRng) -> String {
-    let mut s = String::with_capacity(n);
-    for _ in 0..n {
-        let c = r.gen_range(0..=26) as u8 + b'a';
-        s.push(c as char);
-    }
-    s
-}
+const CHARS: &[char] = &[
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', '東', '京', 'ß', 'ℝ', '💣', 'Є', 'ق', 'ܔ', 'દ', 'ଖ', '௵',
+    '౸',
+];
 
-fn random_unicode_string(n: usize, r: &mut ThreadRng) -> String {
-    let mut s = String::with_capacity(n);
-    for _ in 0..n {
-        let c = random_unicode_char(r);
-
+fn gen_string(l1: usize, r: &mut ThreadRng) -> String {
+    let mut s = String::with_capacity(l1 * 2);
+    for _ in 0..l1 {
+        let c = CHARS[r.gen_range(0..CHARS.len())];
         s.push(c);
     }
     s
-}
-
-fn random_unicode_char(r: &mut ThreadRng) -> char {
-    loop {
-        let c = r.gen_range(0..=char::MAX as _);
-        if let Some(c) = std::char::from_u32(c) {
-            return c;
-        }
-    }
 }
