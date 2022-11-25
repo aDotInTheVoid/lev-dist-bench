@@ -8,23 +8,27 @@ fn main() {
 
     let mut rng = rand::thread_rng();
 
+    writeln!(out, "pub const DATA: &[(usize, &str, &str)] = &[").unwrap();
+
     for i in 1..1000 {
         // let ls = rng.gen_range(0..=min(64, i));
         // let lt = rng.gen_range(0..=min(64, i));
 
-        let ls = 64;
-        let lt = 64;
+        let ls = 2000;
+        let lt = 2000;
 
-        // let s = random_string(ls, &mut rng);
-        // let t = random_string(lt, &mut rng);
+        let s = random_string(ls, &mut rng);
+        let t = random_string(lt, &mut rng);
 
-        let s = random_unicode_string(ls, &mut rng);
-        let t = random_unicode_string(lt, &mut rng);
+        // let s = random_unicode_string(ls, &mut rng);
+        // let t = random_unicode_string(lt, &mut rng);
 
         let d = edit_distance::edit_distance(&s, &t);
 
         writeln!(out, "({d}, {s:?}, {t:?}),").unwrap();
     }
+
+    writeln!(out, "];").unwrap();
 
     println!("{}", out);
 }
