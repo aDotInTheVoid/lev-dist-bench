@@ -73,7 +73,7 @@ def make_plot(name, data):
 
 if __name__ == "__main__":
     ds = []
-    for i in range(1, 11):
+    for i in range(1, 101):
         ds.append(load_file(f"data/run_{i}.txt"))
 
     ds = partition(merge_dicts(ds))

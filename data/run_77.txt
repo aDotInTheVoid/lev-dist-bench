@@ -1,0 +1,36 @@
+    Finished release [optimized] target(s) in 0.00s
+    Starting 32 tests across 2 binaries
+        PASS [   0.426s] lev-dist::it l1024::myers
+        PASS [   4.297s] lev-dist::it l1024::one_row
+        PASS [   4.079s] lev-dist::it l1024::two_rows
+        PASS [   0.151s] lev-dist::it l128::myers
+        PASS [   0.058s] lev-dist::it l128::one_row
+        PASS [   0.057s] lev-dist::it l128::two_rows
+        PASS [   0.004s] lev-dist::it l16::full_matrix
+        PASS [   0.002s] lev-dist::it l16::myers
+        PASS [   0.003s] lev-dist::it l16::one_row
+        PASS [   0.003s] lev-dist::it l16::two_rows
+        PASS [   0.928s] lev-dist::it l2048::myers
+        PASS [  18.618s] lev-dist::it l2048::one_row
+        PASS [  17.728s] lev-dist::it l2048::two_rows
+        PASS [   0.149s] lev-dist::it l256::myers
+        PASS [   0.268s] lev-dist::it l256::one_row
+        PASS [   0.239s] lev-dist::it l256::two_rows
+        PASS [   0.002s] lev-dist::it l2::full_matrix
+        PASS [   0.001s] lev-dist::it l2::myers
+        PASS [   3.963s] lev-dist::it l2::naive
+        PASS [   0.003s] lev-dist::it l2::one_row
+        PASS [   0.002s] lev-dist::it l2::two_rows
+        PASS [   0.008s] lev-dist::it l32::full_matrix
+        PASS [   0.002s] lev-dist::it l32::myers
+        PASS [   0.006s] lev-dist::it l32::one_row
+        PASS [   0.006s] lev-dist::it l32::two_rows
+        PASS [   0.569s] lev-dist::it l512::myers
+        PASS [   1.056s] lev-dist::it l512::one_row
+        PASS [   0.999s] lev-dist::it l512::two_rows
+        PASS [   0.023s] lev-dist::it l64::full_matrix
+        PASS [   0.300s] lev-dist::it l64::myers
+        PASS [   0.019s] lev-dist::it l64::one_row
+        PASS [   0.018s] lev-dist::it l64::two_rows
+------------
+     Summary [  53.987s] 32 tests run: 32 passed, 0 skipped

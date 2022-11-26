@@ -1,7 +1,7 @@
 #!/bin/bash
-set -eou pipefail
+set -eoxu pipefail
 
-for i in $(seq 1 10)
+for i in $(seq 1 100)
 do
-	 cargo nextest run --release -j16 2> data/run_$i.txt
- done
+	cargo nextest run --release -j1 2> data/run_$i.txt
+done
